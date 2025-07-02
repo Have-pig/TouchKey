@@ -1,0 +1,82 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/01/2025 15:27:20 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: F:\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REG52.H>
+   2          
+   3          sbit keyL = P0^4;
+   4          sbit keyR = P0^6;
+   5          
+   6          void UsartInit(){
+   7   1        SCON = 0x50;
+   8   1        TMOD = 0x20;
+   9   1        PCON = 0x80;
+  10   1        TH1 = 0xFA;
+  11   1        TL1 = TH1;
+  12   1        TR1 = 1;
+  13   1      }
+  14          
+  15          void sendByte(unsigned char b){
+  16   1        SBUF = b;
+  17   1        while (!TI);
+  18   1        TI = 0;
+  19   1      }
+  20          
+  21          void main(){
+  22   1        unsigned char Zkey[8] = 0x00;
+  23   1        unsigned char Xkey[8] = 0x00;
+  24   1        unsigned char BothKey[8] = 0x00;
+  25   1        unsigned char NoKey[8] = 0x00;
+  26   1        unsigned char i;
+  27   1      
+  28   1        Zkey[2] = 0x1D;
+  29   1        Xkey[2] = 0x1B;
+  30   1        BothKey[2] = 0x1D;
+  31   1        BothKey[3] = 0x1B;
+  32   1        
+  33   1        UsartInit();
+  34   1      
+  35   1        while(1){
+  36   2          if(keyL==1 & keyR==1){
+  37   3            for(i=0;i<8;i++){
+  38   4              sendByte(BothKey[i]);
+  39   4            }
+  40   3          }else if (keyL==1)
+  41   2          {
+  42   3            for(i=0;i<8;i++){
+  43   4              sendByte(Zkey[i]);
+  44   4            }
+  45   3          }else if (keyR==1)
+  46   2          {
+  47   3            for(i=0;i<8;i++){
+  48   4              sendByte(Xkey[i]);
+  49   4            }
+  50   3          }else{
+  51   3            for(i=0;i<8;i++){
+  52   4              sendByte(NoKey[i]);
+  53   4            }
+  54   3          }
+C51 COMPILER V9.60.7.0   MAIN                                                              07/01/2025 15:27:20 PAGE 2   
+
+  55   2        }
+  56   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    226    ----
+   CONSTANT SIZE    =     32    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      33
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
